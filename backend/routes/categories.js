@@ -1,6 +1,7 @@
 const express = require("express");
 const { Category } = require("../models");
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Criar categoria
-router.post("/", auth, async (req, res) => {
+router.post("/", auth, admin, async (req, res) => {
   const { name, slug } = req.body;
 
   const categoria = await Category.create({
@@ -37,7 +38,7 @@ router.post("/", auth, async (req, res) => {
 });
 
 // Atualizar categoria
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", auth, admin, async (req, res) => {
   const categoria = await Category.findByPk(req.params.id);
 
   if (!categoria) {
@@ -52,7 +53,7 @@ router.put("/:id", auth, async (req, res) => {
 });
 
 // Excluir categoria
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, admin, async (req, res) => {
   const categoria = await Category.findByPk(req.params.id);
 
   if (!categoria) {

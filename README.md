@@ -1,24 +1,17 @@
-
 # 🛍️ Digital Store
 
-Projeto de uma loja virtual desenvolvido como parte do meu aprendizado em desenvolvimento web, utilizando React no frontend, Node.js e Express no backend, e MySQL como banco de dados.
+Aplicação de e-commerce desenvolvida com React, Node.js, Express e MySQL, como projeto de aprendizado e evolução em desenvolvimento web.
 
-O objetivo é construir uma aplicação de e-commerce moderna, responsiva e funcional, com cadastro de usuários, autenticação, catálogo de produtos e carrinho de compras.
+A Digital Store tem como objetivo oferecer uma experiência de compra simples e intuitiva, com cadastro de usuários, autenticação, catálogo de produtos, categorias e carrinho de compras.
 
----
-
-## 📌 Sobre o projeto
-
-A Digital Store é uma aplicação web de comércio eletrônico que busca oferecer uma experiência simples e intuitiva para os usuários.
-
-O projeto está sendo desenvolvido gradualmente, implementando funcionalidades tanto no frontend quanto no backend, com integração a banco de dados e autenticação de usuários.
+O projeto está sendo desenvolvido em etapas, com uma arquitetura preparada para receber novas funcionalidades.
 
 ---
 
 ## 🚀 Tecnologias utilizadas
 
 ### Frontend
-- React
+- React 19
 - JavaScript
 - HTML5
 - CSS3
@@ -29,13 +22,12 @@ O projeto está sendo desenvolvido gradualmente, implementando funcionalidades t
 - Express.js
 - Sequelize ORM
 - MySQL
-- JWT (JSON Web Token)
+- JSON Web Token (JWT)
 - bcryptjs
 
 ### Ferramentas
 - Visual Studio Code
-- Git
-- GitHub
+- Git e GitHub
 - MySQL
 
 ---
@@ -43,23 +35,27 @@ O projeto está sendo desenvolvido gradualmente, implementando funcionalidades t
 ## ✨ Funcionalidades
 
 ### Frontend
-- [x] Página inicial
-- [x] Layout responsivo
+
+- [x] Página inicial da loja
 - [x] Catálogo de produtos
-- [x] Exibição de preços
-- [x] Categorias de produtos
+- [x] Exibição de preços e categorias
 - [x] Carrinho de compras
-- [x] Adicionar produtos ao carrinho
-- [x] Remover produtos do carrinho
+- [x] Adicionar e remover produtos do carrinho
 - [x] Controle de quantidade
 - [x] Cálculo automático do total
-- [x] Página de cadastro de usuários
-- [x] Página de login
+- [x] Cadastro de usuários
+- [x] Login
+- [x] Recuperação de senha
+- [x] Redefinição de senha
+- [x] Página Minha Conta
+- [x] Encerramento de sessão
+- [x] Persistência e verificação de sessão
 
 ### Backend
+
 - [x] API REST com Express
 - [x] Conexão com MySQL
-- [x] ORM Sequelize
+- [x] Modelagem com Sequelize
 - [x] Modelagem de usuários
 - [x] Modelagem de produtos
 - [x] Modelagem de categorias
@@ -67,19 +63,27 @@ O projeto está sendo desenvolvido gradualmente, implementando funcionalidades t
 - [x] Modelagem de opções de produtos
 - [x] Cadastro de usuários
 - [x] Criptografia de senhas com bcrypt
-- [x] Autenticação JWT
+- [x] Autenticação com JWT
 - [x] Middleware de autenticação
-- [x] Consulta de perfil autenticado
-- [x] Atualização de dados do usuário
-- [x] Exclusão de conta
+- [x] Controle de permissões por perfil
+- [x] Perfis de cliente e administrador
+- [x] Consulta e atualização de dados do usuário
+- [x] Proteção de rotas administrativas
+- [x] Recuperação de senha por token
+- [x] Redefinição de senha
+- [x] Confirmação da senha atual para alteração de senha
 
 ### Em desenvolvimento
-- [ ] Integração completa entre frontend e backend
-- [ ] Persistência do carrinho de compras
-- [ ] Gerenciamento de produtos
-- [ ] Gerenciamento de categorias
+
+- [ ] Integração completa do catálogo com a API
 - [ ] Painel administrativo
-- [ ] Finalização de pedidos
+- [ ] Gerenciamento completo de produtos
+- [ ] Gerenciamento de categorias
+- [ ] Controle de estoque
+- [ ] Cadastro de fornecedores
+- [ ] Gestão de pedidos
+- [ ] Relatórios financeiros e de vendas
+- [ ] Persistência do carrinho de compras
 - [ ] Integração com meios de pagamento
 - [ ] Histórico de pedidos
 
@@ -95,10 +99,12 @@ DigitalStore/
 │   │   └── database.js
 │   │
 │   ├── middleware/
-│   │   └── auth.js
+│   │   ├── auth.js
+│   │   └── admin.js
 │   │
 │   ├── models/
 │   │   ├── user.js
+│   │   ├── PasswordReset.js
 │   │   ├── Category.js
 │   │   ├── Product.js
 │   │   ├── ProductImage.js
@@ -111,17 +117,25 @@ DigitalStore/
 │   │   ├── categories.js
 │   │   └── products.js
 │   │
+│   ├── services/
+│   │
 │   ├── server.js
 │   ├── package.json
-│   └── .env
+│   └── package-lock.json
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── pages/
 │   │   │   ├── Cadastro.jsx
-│   │   │   ├── cadastro.css
+│   │   │   ├── Cadastro.css
 │   │   │   ├── Login.jsx
-│   │   │   └── Login.css
+│   │   │   ├── Login.css
+│   │   │   ├── MinhaConta.jsx
+│   │   │   ├── MinhaConta.css
+│   │   │   ├── EsqueciSenha.jsx
+│   │   │   ├── EsqueciSenha.css
+│   │   │   ├── RedefinirSenha.jsx
+│   │   │   └── RedefinirSenha.css
 │   │   │
 │   │   ├── App.jsx
 │   │   ├── App.css
@@ -138,30 +152,30 @@ DigitalStore/
 
 ## ⚙️ Pré-requisitos
 
-Para executar o projeto localmente, é necessário ter instalado:
+Antes de executar o projeto, instale:
 
 - [Node.js](https://nodejs.org/)
 - [MySQL](https://dev.mysql.com/downloads/)
 - [Visual Studio Code](https://code.visualstudio.com/)
-- Git
+- [Git](https://git-scm.com/)
 
 ---
 
 ## 🗄️ Configuração do banco de dados
 
-Abra o MySQL e execute:
+Crie o banco de dados MySQL:
 
 ```sql
-CREATE DATABASE digitalstore;
+CREATE DATABASE digital_store;
 ```
 
-O banco de dados será utilizado pelo backend através do Sequelize.
+O backend utiliza Sequelize para realizar a conexão e gerenciar os modelos do banco de dados.
 
 ---
 
 ## 🔧 Configuração do Backend
 
-### 1. Acesse a pasta backend
+### 1. Acesse a pasta
 
 ```bash
 cd backend
@@ -173,42 +187,36 @@ cd backend
 npm install
 ```
 
-### 3. Configure as variáveis de ambiente
+### 3. Configure o arquivo `.env`
 
-Crie um arquivo `.env` dentro da pasta `backend`.
+Crie um arquivo chamado `.env` dentro da pasta `backend`, utilizando as variáveis esperadas pela configuração do projeto.
 
-Exemplo:
+Exemplo de configuração:
 
 ```env
 PORT=3000
 
 DB_HOST=localhost
 DB_PORT=3306
-DB_NAME=digitalstore
+DB_NAME=digital_store
 DB_USER=root
 DB_PASSWORD=sua_senha_mysql
 
-JWT_SECRET=coloque_uma_chave_secreta_forte
+JWT_SECRET=sua_chave_secreta_forte
 JWT_EXPIRES_IN=1d
 ```
 
-**Importante:** Não compartilhe seu arquivo `.env` nem envie senhas ou chaves secretas para o GitHub.
+Caso utilize o serviço de envio de e-mails para recuperação de senha, configure também as variáveis exigidas pelo serviço de e-mail do projeto.
 
-### 4. Inicie o servidor
+**Importante:** nunca envie o arquivo `.env` para o GitHub. Ele contém informações privadas, como senhas e chaves de acesso.
 
-Modo desenvolvimento:
-
-```bash
-npm run dev
-```
-
-Ou modo normal:
+### 4. Inicie o backend
 
 ```bash
-npm start
+NODE_USE_SYSTEM_CA=1 npm run dev
 ```
 
-O backend estará disponível em:
+O servidor ficará disponível em:
 
 http://localhost:3000
 
@@ -216,9 +224,9 @@ http://localhost:3000
 
 ## 💻 Configuração do Frontend
 
-### 1. Abra outro terminal
+Abra outro terminal.
 
-Acesse a pasta frontend:
+### 1. Acesse a pasta
 
 ```bash
 cd frontend
@@ -230,125 +238,132 @@ cd frontend
 npm install
 ```
 
-### 3. Inicie o projeto
+### 3. Inicie o frontend
 
 ```bash
 npm run dev
 ```
 
-O frontend estará disponível em:
+A aplicação ficará disponível em:
 
 http://localhost:5173
 
 ---
 
-## 🔗 API
+## 🔗 Principais rotas da API
 
 ### Autenticação
 
 | Método | Endpoint | Descrição |
 |---|---|---|
 | POST | `/api/auth/register` | Cadastro de usuário |
-| POST | `/api/auth/login` | Login de usuário |
+| POST | `/api/auth/login` | Login |
+| POST | `/api/auth/forgot-password` | Solicitação de recuperação de senha |
+| POST | `/api/auth/reset-password` | Redefinição de senha |
 
 ### Usuários
 
 | Método | Endpoint | Descrição |
 |---|---|---|
-| GET | `/api/users/me` | Consulta usuário autenticado |
+| GET | `/api/users/me` | Consulta o usuário autenticado |
 | GET | `/api/users/:id` | Consulta usuário |
-| PUT | `/api/users/:id` | Atualiza dados do usuário |
+| PUT | `/api/users/:id` | Atualiza dados da conta |
 | DELETE | `/api/users/:id` | Exclui conta |
 
 ### Produtos
 
 | Método | Endpoint | Descrição |
 |---|---|---|
-| GET | `/api/products` | Listagem de produtos |
+| GET | `/api/products` | Lista produtos |
+| GET | `/api/products/:id` | Consulta produto |
+| POST | `/api/products` | Cadastra produto (administrador) |
+| PUT | `/api/products/:id` | Atualiza produto (administrador) |
+| DELETE | `/api/products/:id` | Exclui produto (administrador) |
 
 ### Categorias
 
 | Método | Endpoint | Descrição |
 |---|---|---|
-| GET | `/api/categories` | Listagem de categorias |
+| GET | `/api/categories` | Lista categorias |
+| GET | `/api/categories/:id` | Consulta categoria |
+| POST | `/api/categories` | Cadastra categoria (administrador) |
+| PUT | `/api/categories/:id` | Atualiza categoria (administrador) |
+| DELETE | `/api/categories/:id` | Exclui categoria (administrador) |
 
-> Algumas rotas podem receber atualizações durante o desenvolvimento.
+As rotas protegidas exigem autenticação e, nas operações administrativas, permissão de administrador.
 
 ---
 
-## 🔐 Autenticação
+## 🔐 Segurança e autenticação
 
-O sistema utiliza JSON Web Token (JWT) para autenticação.
+A Digital Store utiliza:
 
-As senhas dos usuários são armazenadas utilizando hash com bcrypt, evitando armazenamento em texto puro.
+- JWT para autenticação.
+- bcryptjs para proteção das senhas.
+- Middleware para verificar a validade dos tokens.
+- Controle de acesso por perfil de usuário.
+- Proteção de rotas administrativas.
+- Tokens temporários para recuperação de senha.
+- Confirmação da senha atual nas alterações de senha.
 
-As rotas protegidas exigem o envio do token no cabeçalho HTTP:
+O token de autenticação deve ser enviado no cabeçalho HTTP:
 
 ```http
 Authorization: Bearer SEU_TOKEN
 ```
 
+O cadastro público não permite que um usuário escolha seu próprio perfil administrativo.
+
 ---
 
 ## 🛒 Carrinho de compras
 
-O carrinho permite:
+O carrinho possui funcionalidades para:
 
 - Adicionar produtos.
-- Aumentar quantidade de produtos.
+- Alterar quantidades.
 - Remover produtos.
-- Calcular subtotal.
-- Calcular total da compra.
+- Calcular subtotais.
+- Calcular o total da compra.
 
-Atualmente, o carrinho é controlado no frontend.
+Atualmente, o controle do carrinho é realizado no frontend.
 
 ---
 
 ## 📱 Responsividade
 
-A interface foi desenvolvida utilizando CSS e media queries para adaptar o layout a diferentes tamanhos de tela, incluindo:
+A interface utiliza CSS e media queries para adaptar a experiência de navegação a diferentes dispositivos:
 
-- Computadores
-- Tablets
-- Smartphones
-
----
-
-## ▶️ Executando o projeto
-
-Para executar a aplicação, é necessário manter dois terminais abertos.
-
-### Terminal 1: Backend
-
-```bash
-cd backend
-npm run dev
-```
-
-### Terminal 2: Frontend
-
-```bash
-cd frontend
-npm run dev
-```
-
-Depois acesse:
-
-http://localhost:5173
+- Computadores.
+- Tablets.
+- Smartphones.
 
 ---
 
-## 📌 Status do projeto
+## 📌 Planejamento do projeto
 
-🟡 Em desenvolvimento
+O desenvolvimento está dividido em etapas:
 
-O projeto está sendo desenvolvido continuamente, com implementação gradual de funcionalidades, integração entre frontend e backend, autenticação e melhorias na experiência do usuário.
+1. Autenticação e middleware.
+2. Segurança das contas e senhas.
+3. Controle de permissões administrativas.
+4. Testes do sistema de usuários.
+5. Gerenciamento de produtos e categorias.
+6. Carrinho de compras.
+7. Interface e responsividade.
+8. Segurança e configurações.
+9. Testes completos da loja.
+10. Preparação para publicação.
+
+O painel administrativo será desenvolvido inicialmente para o gerenciamento de produtos. Um módulo de serviços poderá ser incorporado em uma fase futura.
 
 ---
 
 ## 👨‍💻 Desenvolvedor
 
-Projeto desenvolvido por **Cleilson Mendonça** como parte dos estudos e evolução em desenvolvimento web.
+Projeto desenvolvido por **Cleilson Mendonça**, como parte dos estudos e evolução em desenvolvimento web.
+
+Repositório: https://github.com/cleilsonsm2-dev/DigitalStore
 
 ---
 

@@ -1,7 +1,12 @@
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+
 import Cadastro from './pages/Cadastro.jsx'
+import Login from './pages/Login.jsx'
+import MinhaConta from './pages/MinhaConta.jsx'
+import EsqueciSenha from './pages/EsqueciSenha.jsx'
+import RedefinirSenha from './pages/RedefinirSenha.jsx'
 
 const products = [
   {
@@ -35,10 +40,54 @@ const products = [
 ]
 
 function App() {
+  const tokenInicial = new URLSearchParams(window.location.search).get('token')
+
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(false)
-  const [pagina, setPagina] = useState('loja')
+  const [pagina, setPagina] = useState(
+    tokenInicial ? 'redefinir-senha' : 'loja'
+  )
+  const [usuario, setUsuario] = useState(null)
+  const [tokenRecuperacao, setTokenRecuperacao] = useState(tokenInicial)
 
+  // Recupera a sessão quando a página é carregada
+  useEffect(() => {
+    async function verificarSessao() {
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        return
+      }
+
+      try {
+        const resposta = await fetch(
+          'http://localhost:3000/api/users/me',
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        )
+
+        if (!resposta.ok) {
+          throw new Error('Sessão inválida.')
+        }
+
+        const dados = await resposta.json()
+        setUsuario(dados)
+
+      } catch (erro) {
+        console.error('Erro ao recuperar sessão:', erro)
+        localStorage.removeItem('token')
+        setUsuario(null)
+      }
+    }
+
+    verificarSessao()
+  }, [])
+
+  // Adiciona produto ao carrinho
   const addToCart = (product) => {
     setCart((currentCart) => {
       const existingProduct = currentCart.find(
@@ -57,6 +106,7 @@ function App() {
     })
   }
 
+  // Remove uma unidade do produto
   const removeFromCart = (productId) => {
     setCart((currentCart) =>
       currentCart
@@ -69,23 +119,88 @@ function App() {
     )
   }
 
+  // Quantidade total de produtos
   const cartQuantity = cart.reduce(
     (total, item) => total + item.quantity,
     0
   )
 
+  // Valor total do carrinho
   const cartTotal = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   )
 
+  // Formatação de valores em reais
   const formatPrice = (value) =>
     value.toLocaleString('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     })
 
-  // Exibe a tela de cadastro
+  // Login realizado
+  const handleLoginSucesso = (dadosUsuario) => {
+    setUsuario(dadosUsuario)
+    setPagina('loja')
+  }
+
+  // Atualiza os dados do usuário após edição
+  const handleUsuarioAtualizado = (dadosUsuario) => {
+    setUsuario(dadosUsuario)
+  }
+
+  // Finaliza recuperação e volta ao login
+  const handleVoltarLogin = () => {
+    setTokenRecuperacao(null)
+
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    )
+
+    setPagina('login')
+  }
+
+  // Sair da conta
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    setUsuario(null)
+    setPagina('loja')
+  }
+
+  // Tela de redefinição de senha
+  if (pagina === 'redefinir-senha') {
+    return (
+      <RedefinirSenha
+        token={tokenRecuperacao}
+        onVoltar={handleVoltarLogin}
+      />
+    )
+  }
+
+  // Tela de recuperação de senha
+  if (pagina === 'esqueci-senha') {
+    return (
+      <EsqueciSenha
+        onVoltar={() => setPagina('login')}
+      />
+    )
+  }
+
+  // Tela de login
+  if (pagina === 'login') {
+    return (
+      <Login
+        onVoltar={() => setPagina('loja')}
+        onCriarConta={() => setPagina('cadastro')}
+        onLoginSucesso={handleLoginSucesso}
+        onEsqueciSenha={() => setPagina('esqueci-senha')}
+      />
+    )
+  }
+
+  // Tela de cadastro
   if (pagina === 'cadastro') {
     return (
       <Cadastro
@@ -94,10 +209,22 @@ function App() {
     )
   }
 
+  // Tela Minha Conta
+  if (pagina === 'minha-conta') {
+    return (
+      <MinhaConta
+        usuario={usuario}
+        onVoltar={() => setPagina('loja')}
+        onUsuarioAtualizado={handleUsuarioAtualizado}
+      />
+    )
+  }
+
   return (
     <div className="app">
 
       <header className="header">
+
         <a href="#" className="logo">
           Digital<span>Store</span>
         </a>
@@ -109,12 +236,44 @@ function App() {
         </nav>
 
         <div className="header-actions">
-          <button
-            className="account-button"
-            onClick={() => setPagina('cadastro')}
-          >
-            Criar conta
-          </button>
+
+          {usuario ? (
+            <>
+              <button
+                className="account-button"
+                onClick={() => setPagina('minha-conta')}
+              >
+                Minha conta
+              </button>
+
+              <span className="user-name">
+                Olá, {usuario.name}
+              </span>
+
+              <button
+                className="account-button"
+                onClick={handleLogout}
+              >
+                Sair
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="account-button"
+                onClick={() => setPagina('login')}
+              >
+                Entrar
+              </button>
+
+              <button
+                className="account-button"
+                onClick={() => setPagina('cadastro')}
+              >
+                Criar conta
+              </button>
+            </>
+          )}
 
           <button
             className="cart-button"
@@ -122,13 +281,16 @@ function App() {
           >
             🛒 Carrinho ({cartQuantity})
           </button>
+
         </div>
+
       </header>
 
       <main>
 
         <section className="hero">
           <div className="hero-content">
+
             <span className="tag">NOVA COLEÇÃO</span>
 
             <h1>
@@ -143,6 +305,7 @@ function App() {
             <a href="#produtos" className="hero-button">
               Comprar agora
             </a>
+
           </div>
         </section>
 
@@ -168,6 +331,7 @@ function App() {
                 />
 
                 <div className="product-info">
+
                   <span>{product.category}</span>
 
                   <h3>{product.name}</h3>
@@ -179,18 +343,21 @@ function App() {
                   <button onClick={() => addToCart(product)}>
                     Adicionar ao carrinho
                   </button>
+
                 </div>
 
               </article>
             ))}
 
           </div>
+
         </section>
 
         {showCart && (
           <section className="cart-section" id="carrinho">
 
             <div className="cart-header">
+
               <h2>Meu carrinho de compras</h2>
 
               <button
@@ -199,18 +366,24 @@ function App() {
               >
                 ✕ Fechar
               </button>
+
             </div>
 
             {cart.length === 0 ? (
               <p>Seu carrinho está vazio.</p>
             ) : (
               <>
+
                 {cart.map((item) => (
                   <div className="cart-item" key={item.id}>
 
-                    <img src={item.image} alt={item.name} />
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                    />
 
                     <div className="cart-item-info">
+
                       <h3>{item.name}</h3>
 
                       <p>Preço: {formatPrice(item.price)}</p>
@@ -220,6 +393,7 @@ function App() {
                       <strong>
                         Subtotal: {formatPrice(item.price * item.quantity)}
                       </strong>
+
                     </div>
 
                     <button
@@ -233,8 +407,11 @@ function App() {
                 ))}
 
                 <div className="cart-total">
-                  <h3>Total da compra: {formatPrice(cartTotal)}</h3>
+                  <h3>
+                    Total da compra: {formatPrice(cartTotal)}
+                  </h3>
                 </div>
+
               </>
             )}
 
@@ -242,11 +419,13 @@ function App() {
         )}
 
         <section className="about-section" id="sobre">
+
           <h2>Bem-vindo à Digital Store</h2>
 
           <p>
             Uma experiência de compras simples, moderna e segura.
           </p>
+
         </section>
 
       </main>

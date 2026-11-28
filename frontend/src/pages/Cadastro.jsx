@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import "./Cadastro.css";
+import "./cadastro.css";
 
 function Cadastro({ onVoltar, onCadastroSucesso }) {
   const [formulario, setFormulario] = useState({

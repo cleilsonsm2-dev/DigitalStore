@@ -12,7 +12,8 @@ function dadosPublicos(usuario) {
   return {
     id: usuario.id,
     name: usuario.name,
-    email: usuario.email
+    email: usuario.email,
+    role: usuario.role
   };
 }
 
@@ -108,17 +109,40 @@ router.put("/:id", auth, async (req, res) => {
     }
 
     if (req.body.password) {
-      if (req.body.password.length < 8) {
-        return res.status(400).json({
-          message: "A senha deve ter pelo menos 8 caracteres."
-        });
-      }
+  if (
+    typeof req.body.password !== "string" ||
+    req.body.password.length < 8
+  ) {
+    return res.status(400).json({
+      message: "A nova senha deve ter pelo menos 8 caracteres."
+    });
+  }
 
-      dados.password = await bcrypt.hash(
-        req.body.password,
-        10
-      );
-    }
+  if (
+    typeof req.body.currentPassword !== "string" ||
+    !req.body.currentPassword
+  ) {
+    return res.status(400).json({
+      message: "Informe sua senha atual para alterá-la."
+    });
+  }
+
+  const senhaAtualCorreta = await bcrypt.compare(
+    req.body.currentPassword,
+    usuario.password
+  );
+
+  if (!senhaAtualCorreta) {
+    return res.status(401).json({
+      message: "A senha atual está incorreta."
+    });
+  }
+
+  dados.password = await bcrypt.hash(
+    req.body.password,
+    10
+  );
+}
 
     await usuario.update(dados);
 
